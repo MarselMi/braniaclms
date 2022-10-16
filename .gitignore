@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+/.idea
+db.sqlite3
+/media
+/frontend/migrations/
+*.pyc
+
 # C extensions
 *.so
 
