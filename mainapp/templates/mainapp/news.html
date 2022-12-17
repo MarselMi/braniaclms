@@ -10,9 +10,9 @@
         <div class="card my-2">
           <div class="card-body">
             <h5 class="card-title">{{ new.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{ new.created_at|date:'D.m.Y' }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">{{ new.created_ad|date:'D.m.Y' }}</h6>
             <p class="card-text">{{ new.preamble }}</p>
-            <a href="#" class="card-link">{{ new.body }}</a>
+            <a href="{% url 'mainapp:news_detail' new.pk %}" class="card-link">{{ new.body }}</a>
           </div>
         </div>
 
