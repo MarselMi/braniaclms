@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from .models import News, Lesson, Course, CourseTeacher
 
 
 class MainPageView(TemplateView):
@@ -8,6 +9,11 @@ class MainPageView(TemplateView):
 class NewsPageView(TemplateView):
     template_name = 'mainapp/news.html'
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data['news'] = News.objects.filter(deleted=False)
+        return context_data
 
 class CoursesPageView(TemplateView):
     template_name = 'mainapp/courses_list.html'
