@@ -139,6 +139,5 @@ LOGOUT_REDIRECT_URL = 'mainapp:index'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 AUTHENTICATION_BACKENDS = (
-    "social_core.backends.github.GithubOAuth2",
     "django.contrib.auth.backends.ModelBackend"
 )
