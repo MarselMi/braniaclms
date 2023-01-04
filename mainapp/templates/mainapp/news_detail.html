@@ -1,0 +1,21 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+
+    <div class="row">
+
+      <div class="col-lg-8">
+
+        <div class="card my-2">
+          <div class="card-body">
+            <h5 class="card-title">{{ news.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ news.created_ad|date:'D.m.Y' }}</h6>
+            <p class="card-text">{{ news.preamble }}</p>
+            <p class="card-text">{{ news.body }}</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+{% endblock %}
