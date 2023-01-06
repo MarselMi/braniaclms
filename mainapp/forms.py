@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from . import models as mainapp_models
+from mainapp import models
 
 
 class CourseFeedbackForm(forms.ModelForm):
@@ -12,10 +12,10 @@ class CourseFeedbackForm(forms.ModelForm):
             self.fields["user"].initial = user.pk
 
     class Meta:
-        model = mainapp_models.CourseFeedback
+        model = models.CourseFeedback
         fields = ("course", "user", "feedback", "rating")
         widgets = {
-        "course": forms.HiddenInput(),
-        "user": forms.HiddenInput(),
-        "rating": forms.RadioSelect(),
+            "course": forms.HiddenInput(),
+            "user": forms.HiddenInput(),
+            "rating": forms.RadioSelect(),
         }

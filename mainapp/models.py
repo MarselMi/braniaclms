@@ -20,7 +20,6 @@ class News(models.Model):
     class Meta:
         verbose_name = _('Новость')
         verbose_name_plural = _('Новости')
-        ordering = _("-created_ad",)
 
     def delete(self, *args, **kwargs):
         self.deleted = True

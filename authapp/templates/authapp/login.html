@@ -1,14 +1,9 @@
 {% extends 'authapp/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     <form method="post">
         {% csrf_token %}
-        <p>
-            <input id="id_username" class="form-control" type="text" name="username" placeholder="Имя пользователя" required="" autofocus="">
-        </p>
-        <p>
-            <input id="id_password" class="form-control" type="password" name="password" placeholder="Пароль" required="">
-        </p>
-        <p>
+        {{ form|crispy }}
             <button type="submit" class="btn btn-primary btn-block">
                 Войти
             </button>

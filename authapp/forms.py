@@ -21,15 +21,16 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = get_user_model()
 
-    fields = (
-        "username",
-        "email",
-        "first_name",
-        "last_name",
-        "age",
-        "avatar",
-    )
-    field_classes = {"username": UsernameField}
+        fields = (
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "age",
+            "avatar",
+        )
+
+        field_classes = {"username": UsernameField}
 
 
 class CustomUserChangeForm(forms.ModelForm):

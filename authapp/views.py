@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import reverse
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView
-from . import forms
+from authapp import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -32,10 +32,12 @@ class CustomLoginView(LoginView):
             )
         return self.render_to_response(self.get_context_data(form=form))
 
+
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.add_message(self.request, messages.INFO, _("See you later!"))
         return super().dispatch(request, *args, **kwargs)
+
 
 class RegisterView(CreateView):
     model = get_user_model()

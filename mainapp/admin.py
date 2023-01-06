@@ -1,14 +1,14 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-import models as mainapp_models
+from mainapp import models
 
 
-@admin.register(mainapp_models.News)
+@admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
     search_fields = ["title", "preamble", "body"]
 
 
-@admin.register(mainapp_models.Lesson)
+@admin.register(models.Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = ["id", "course", "num", "title", "deleted"]
     ordering = ["-course", "-num"]
@@ -21,13 +21,15 @@ class LessonAdmin(admin.ModelAdmin):
 
     mark_deleted.short_description = _("Отметить удаленным")
 
-admin.site.register(mainapp_models.Course)
+admin.site.register(models.Course)
 
 
-@admin.register(mainapp_models.CourseTeacher)
+@admin.register(models.CourseTeacher)
 class CourseTeachersAdmin(admin.ModelAdmin):
     list_display = ["id", "__str__", "get_courses"]
     list_select_related = True
+
     def get_courses(self, obj):
         return ", ".join((i.name for i in obj.course.all()))
+
     get_courses.short_description = _("Курсы")

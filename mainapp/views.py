@@ -8,8 +8,8 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
     )
-import models as mainapp_models
-import forms as mainapp_forms
+from mainapp import models as mainapp_models
+from mainapp import forms as mainapp_forms
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -79,7 +79,7 @@ class CoursesDetailView(TemplateView):
         if not self.request.user.is_anonymous:
             if not mainapp_models.CourseFeedback.objects.filter(
                     course=context["course_object"], user=self.request.user
-            ).count():
+                ).count():
                 context["feedback_form"] = mainapp_forms.CourseFeedbackForm(
                     course=context["course_object"], user=self.request.user
                 )
