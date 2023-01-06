@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import django.apps
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,8 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "markdownify.apps.MarkdownifyConfig",
     'social_django',
-    'mainapp',
     'authapp',
+    'mainapp',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +155,6 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GITHUB_KEY = 'be4cd5cfcdd3c9d24eda'
 SOCIAL_AUTH_GITHUB_SECRET = 'f530442a0eb02d272ec461503202db9ea6be8b59'
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
