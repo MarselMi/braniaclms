@@ -1,85 +1,52 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 from django.shortcuts import reverse
-from django.views.generic import TemplateView
-from .models import User
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView, CreateView
+from . import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
-class CostomLoginView(LoginView):
-    template_name = 'authapp/login.html'
-    extra_context = {
-        'title': 'Авторизация пользователя'
-    }
 
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        ret = super().form_valid(form)
+        message = _("Login success!<br>Hi, %(username)s") % {
+            "username": self.request.user.get_full_name()
+            if self.request.user.get_full_name()
+            else self.request.user.get_username()
+        }
+        messages.add_message(self.request, messages.INFO, mark_safe(message))
+        return ret
+    def form_invalid(self, form):
+        for _unused, msg in form.error_messages.items():
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                mark_safe(f"Something goes worng:<br>{msg}"),
+            )
+        return self.render_to_response(self.get_context_data(form=form))
 
 class CustomLogoutView(LogoutView):
-    pass
+    def dispatch(self, request, *args, **kwargs):
+        messages.add_message(self.request, messages.INFO, _("See you later!"))
+        return super().dispatch(request, *args, **kwargs)
+
+class RegisterView(CreateView):
+    model = get_user_model()
+    form_class = forms.CustomUserCreationForm
+    success_url = reverse_lazy("mainapp:index")
 
 
-class RegView(TemplateView):
-    template_name = 'authapp/register.html'
-    extra_context = {
-        'title': 'Регистрация пользователя'
-    }
-    def post(self, request, *args, **kwargs):
-        try:
-            if all(
-                    (
-                        request.POST.get('username'),
-                        request.POST.get('password1'),
-                        request.POST.get('password2'),
-                        request.POST.get('firstname'),
-                        request.POST.get('lastname'),
-                        request.POST.get('password1') == request.POST.get('password2'),
-                    )
-            ):
-                new_user = User.objects.create(
-                    username=request.POST.get('username'),
-                    first_name=request.POST.get('firstname'),
-                    last_name=request.POST.get('lastname'),
-                    email=request.POST.get('email'),
-                    age=request.POST.get('age') if request.POST.get('age') else 0,
-                    avatar=request.POST.get('avatar')
-                )
-                new_user.set_password(request.POST.get('password1'))
-                new_user.save()
-                messages.add_message(request, messages.INFO, 'Регистрация прошла успешно')
-                return HttpResponseRedirect(reverse('authapp:login'))
-            else:
-                messages.add_message(
-                    request,
-                    messages.INFO,
-                    'В регистрации возникла ошибка'
-                )
-                return HttpResponseRedirect(reverse('authapp:register'))
-        except Exception:
-            messages.add_message(
-                request,
-                messages.INFO,
-                'В регистрации возникла ошибка'
-            )
-            return HttpResponseRedirect(reverse('authapp:register'))
-
-
-class EditView(TemplateView, LoginRequiredMixin):
-    template_name = 'authapp/edit.html'
-    extra_context = {
-        'title': 'Страница редактирования профиля'
-    }
-    def post(self, request, *args, **kwargs):
-        if request.POST.get('username'):
-            request.user.username = request.POST.get('username')
-        if request.POST.get('firstname'):
-            request.user.first_name = request.POST.get('firstname')
-        if request.POST.get('lastname'):
-            request.user.last_name = request.POST.get('lastname')
-        if request.POST.get('email'):
-            request.user.email = request.POST.get('email')
-        if request.POST.get('age'):
-            request.user.age = request.POST.get('age')
-        if request.POST.get('avatar'):
-            request.user.avatar = request.POST.get('avatar')
-        request.user.save()
-        return HttpResponseRedirect(reverse('authapp:edit'))
+class ProfileEditView(UserPassesTestMixin, UpdateView):
+    model = get_user_model()
+    form_class = forms.CustomUserChangeForm
+    def test_func(self):
+        return True if self.request.user.pk == self.kwargs.get("pk") else False
+    def get_success_url(self):
+        return reverse_lazy("authapp:edit", args=[self.request.user.pk])
